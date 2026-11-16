@@ -1,3 +1,6 @@
 USE campaign_keeper;
 ALTER TABLE campaign
 MODIFY COLUMN name VARCHAR(100);
+
+ALTER TABLE player
+MODIFY COLUMN name VARCHAR(50) NOT NULL;
