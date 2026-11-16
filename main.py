@@ -1,7 +1,14 @@
-from database import get_campaigns, create_campaign
 
-# create_campaign("Curse of Strahd", "D&D 5e", "A game about an very evil vampire!")
-campaigns = get_campaigns()
+from database import (
+    create_campaign,
+    get_campaigns,
+    update_campaign,
+    create_player,
+    get_players,
+    create_character,
+    get_characters,
+    update_character
+)
 
-for campaign in campaigns:
-    print(campaign)
+
+print(get_characters())
