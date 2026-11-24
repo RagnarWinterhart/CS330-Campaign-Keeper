@@ -47,7 +47,10 @@ def create_character(name, campaign_id, player_id):
                 
 def get_characters():
     return _execute_query(
-        "SELECT * FROM player_character",
+        """
+        SELECT id, name, campaign_id, player_id
+        FROM player_character
+        """,
         fetch=True
     )
             
@@ -88,7 +91,118 @@ def delete_campaign(campaign_id):
         "DELETE FROM campaign WHERE id = %s",
         (campaign_id,),
     )
-                
+    
+def create_session(campaign_id, session_name, session_date, notes):
+    return _execute_query(
+        """
+        INSERT INTO game_sessions(campaign_id, session_name, session_date, notes)
+        VALUES (%s, %s, %s, %s)
+        """,
+        (campaign_id, session_name, session_date, notes),
+        return_id=True
+    )
+
+
+def get_sessions():
+    return _execute_query(
+        "SELECT * FROM game_sessions",
+        fetch=True
+    )   
+    
+    
+def get_session_character(name, campaign_id):
+    results = _execute_query(
+        """
+        SELECT id FROM player_character
+        WHERE name = %s AND campaign_id = %s
+        """,
+        (name, campaign_id),
+        fetch=True
+    )
+
+    if len(results) == 1:
+        return results[0][0]
+
+    return None
+
+def add_attendance(session_id, character_id):
+    return _execute_query(
+        """
+        INSERT INTO session_attendance(session_id, player_character_id)
+        VALUES (%s, %s)
+        """,
+        (session_id, character_id)
+    )
+
+
+def remove_attendance(session_id, character_id):
+    return _execute_query(
+        """
+        DELETE FROM session_attendance
+        WHERE session_id = %s AND player_character_id = %s
+        """,
+        (session_id, character_id)
+    )
+
+
+def get_session_characters(session_id):
+    return _execute_query(
+        """
+        SELECT pc.id, pc.name
+        FROM session_attendance sa
+        JOIN player_character pc
+            ON sa.player_character_id = pc.id
+        WHERE sa.session_id = %s
+        """,
+        (session_id,),
+        fetch=True
+    )
+          
+          
+def get_campaign_id_by_name(name):
+    results = _execute_query(
+        "SELECT id FROM campaign WHERE name = %s",
+        (name,),
+        fetch=True
+    )
+    return results[0][0] if len(results) == 1 else None
+
+
+def get_player_id_by_name(name):
+    results = _execute_query(
+        "SELECT id FROM player WHERE name = %s",
+        (name,),
+        fetch=True
+    )
+    return results[0][0] if len(results) == 1 else None
+
+
+def get_character_id_by_name(name, campaign_id):
+    results = _execute_query(
+        """
+        SELECT id FROM player_character
+        WHERE name = %s AND campaign_id = %s
+        """,
+        (name, campaign_id),
+        fetch=True
+    )
+    return results[0][0] if len(results) == 1 else None
+
+
+
+def get_session_attendance_counts(campaign_name):
+    return _execute_query(
+        "SELECT gs.id, gs.session_name, COUNT(sa.player_character_id) AS attendance_count " +
+        "FROM game_sessions gs JOIN campaign c ON gs.campaign_id = c.id " +
+        "LEFT JOIN session_attendance sa ON gs.id = sa.session_id " + 
+        "WHERE c.name = %s "  +
+        "GROUP BY gs.id, gs.session_name "
+        "ORDER BY gs.id;",
+        (campaign_name,),
+        fetch=True
+    )
+
+      
 def _execute_query(query, params=(), fetch=False, return_id=False):
     connection = None
     cursor = None
