@@ -3,7 +3,6 @@ from database import (
     create_campaign,
     create_player,
     create_character,
-    get_session_attendance_counts
 )
 from player_character_menu import(
     input_character, 
@@ -13,7 +12,8 @@ from player_character_menu import(
 )
 from session_menu import(
     create_session_menu,    
-    view_sessions
+    view_sessions,
+    session_attendance_report
 )
 
 
@@ -81,20 +81,7 @@ def main():
             create_session_menu()
             
         elif choice == "9":
-            c = input("Enter Campaign name: ").strip()
-            attendance = get_session_attendance_counts(c)
-
-            print("\n=== Session Attendance ===")
-
-            if not attendance:
-                print("No sessions found for this campaign.")
-            else:
-                for session in attendance:
-                    session_id, session_name, attendance_count = session
-
-                    print(f"\nSession Name: {session_name}")
-                    print(f"Characters Attended: {attendance_count}")
-                    print("-------------------------")
+           session_attendance_report()
 
         elif choice == "0":
             print("Goodbye!")

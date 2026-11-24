@@ -1,3 +1,4 @@
+
 # Campaign Keeper
 
 Campaign Keeper is a Python command-line application for organizing tabletop RPG campaigns, players, characters, and game sessions. It uses a MySQL relational database to store campaign information and track which characters attend each session.
@@ -35,7 +36,7 @@ Campaign Keeper uses a local MySQL database named `campaign_keeper`.
    - `002_expand_campaign_name.sql`
    - `003_game_sessions_table.sql`
 
-   These migrations create and update the tables used by the application.
+These migration files create and update the tables used by the application. Apply them manually in order; the application does not run migrations automatically.
 
 ## Installation and Configuration
 
@@ -44,7 +45,7 @@ Campaign Keeper uses a local MySQL database named `campaign_keeper`.
 2. Install the Python dependencies:
 
    ```bash
-   python -m pip install mysql-connector-python python-dotenv
+   pip install -r requirements.txt
    ```
 
 3. Create a `.env` file in the project root with your local MySQL connection settings:
@@ -56,7 +57,7 @@ Campaign Keeper uses a local MySQL database named `campaign_keeper`.
    DB_NAME=campaign_keeper
    ```
 
-   Replace the example username and password with your own MySQL credentials. Keep `.env` private; do not commit it to version control.
+Replace the example username and password with your own MySQL credentials. Keep `.env` private and do not commit it to version control.
 
 ## Running the Application
 
@@ -70,18 +71,5 @@ The terminal menu provides options for managing campaigns, players, characters, 
 
 ## Project Structure
 
-- `main.py` — command-line menu, user input, and application workflow
-- `database.py` — database connection, SQL queries, and CRUD functions
-- `migrations/` — SQL files used to create and update the database schema
-
-## Data Model
-
-The database contains the following main tables:
-
-- `campaign` — campaign name, game system, and description
-- `player` — player names
-- `player_character` — characters associated with a campaign and player
-- `game_sessions` — sessions associated with a campaign
-- `session_attendance` — records which characters attended each session
-
-A campaign can have multiple characters and sessions. Session attendance connects game sessions and characters, allowing a character to be recorded as attending a session.
+- `main.py` — starts the application and displays the main menu
+- `campaign_menu.py` — campaign-related

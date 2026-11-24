@@ -3,6 +3,7 @@ from database import (
     get_campaign_id_by_name,
     get_campaigns,
     get_character_id_by_name,
+    get_session_attendance_counts,
     get_sessions,
     add_attendance,
     remove_attendance,
@@ -174,3 +175,19 @@ def create_session_menu():
 
     except Exception as error:
         print(f"Failed to create session: {error}")
+        
+def session_attendance_report():
+    c = input("Enter Campaign name: ").strip()
+    attendance = get_session_attendance_counts(c)
+
+    print("\n=== Session Attendance ===")
+
+    if not attendance:
+        print("No sessions found for this campaign.")
+    else:
+        for session in attendance:
+            session_id, session_name, attendance_count = session
+
+            print(f"\nSession Name: {session_name}")
+            print(f"Characters Attended: {attendance_count}")
+            print("-------------------------")
